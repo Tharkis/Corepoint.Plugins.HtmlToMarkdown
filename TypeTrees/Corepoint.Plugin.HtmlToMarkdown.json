@@ -1,0 +1,13 @@
+{
+  "FunctionName": "a",
+  "Parameters": 
+    {
+      "GithubFlavored": true,
+      "RemoveComments": true,
+      "SmartHrefHandling": true,
+      "UnknownTags": "a",
+      "WhitelistUriSchemes": ["a"],
+      "TableWithoutHeaderRowHandling": "a"
+    },
+  "InputData": "a"
+}
