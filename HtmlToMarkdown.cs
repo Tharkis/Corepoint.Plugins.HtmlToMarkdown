@@ -47,8 +47,8 @@ namespace Corepoint.Plugin
                     break;
             }
 
-
-            var config = new Config
+            // Create a config to use with the conversion.
+            var config = new ReverseMarkdown.Config
             {
                 GithubFlavored = function.Parameters.GithubFlavored, // generate GitHub flavoured markdown, supported for BR, PRE and table tags
                 RemoveComments = function.Parameters.RemoveComments, // will ignore all comments
@@ -58,9 +58,11 @@ namespace Corepoint.Plugin
                 TableWithoutHeaderRowHandling = tableHandlingOption //handle table without header rows
             };
 
-            var converter = new Converter();
-
+            
             string html = function.InputData;
+            
+            var converter = new Converter(config);
+
 
             try
             {
