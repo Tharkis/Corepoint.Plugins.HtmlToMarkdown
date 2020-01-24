@@ -9,68 +9,30 @@ namespace Corepoint.Plugin
         {
             resultData = "";
             errorMessage = "";
-
-            // Get the UnknownTags Enum
-            string unknownTags = function.Parameters.UnknownTags;
-            var unknownTagsOption = new Config.UnknownTagsOption();
-
-            switch (unknownTags)
-            {
-                case "Bypass":
-                    unknownTagsOption = Config.UnknownTagsOption.Bypass;
-                    break;
-
-                case "Drop":
-                    unknownTagsOption = Config.UnknownTagsOption.Drop;
-                    break;
-
-                case "Raise":
-                    unknownTagsOption = Config.UnknownTagsOption.Raise;
-                    break;
-
-                default: 
-                    unknownTagsOption = Config.UnknownTagsOption.PassThrough;
-                    break;
-            }
-
-            // Get the TablesWithoutHeaderRowHandling Enum
-            string tableHeaderHandling = function.Parameters.TableWithoutHeaderRowHandling;
-            var tableHandlingOption = new Config.TableWithoutHeaderRowHandlingOption(); 
-            switch (tableHeaderHandling)
-            {
-                case "EmptyRow":
-                    tableHandlingOption = Config.TableWithoutHeaderRowHandlingOption.EmptyRow;
-                    break;
-
-                default: 
-                    tableHandlingOption = Config.TableWithoutHeaderRowHandlingOption.Default;
-                    break;
-            }
-
+            
+            
             // Create a config to use with the conversion.
-            var config = new ReverseMarkdown.Config
+            var config = new Config
             {
                 GithubFlavored = function.Parameters.GithubFlavored, // generate GitHub flavoured markdown, supported for BR, PRE and table tags
                 RemoveComments = function.Parameters.RemoveComments, // will ignore all comments
                 SmartHrefHandling = function.Parameters.SmartHrefHandling, // remove markdown output for links where appropriate
-                UnknownTags = unknownTagsOption, // Include the unknown tag completely in the result (default as well)
+                UnknownTags = (Config.UnknownTagsOption)Enum.Parse(typeof(Config.UnknownTagsOption), function.Parameters.UnknownTags), // Include the unknown tag completely in the result (default as well)
                 WhitelistUriSchemes = function.Parameters.WhitelistUriSchemes, //Specify which schemes (without trailing colon) are to be allowed
-                TableWithoutHeaderRowHandling = tableHandlingOption //handle table without header rows
+                TableWithoutHeaderRowHandling = (Config.TableWithoutHeaderRowHandlingOption)Enum.Parse(typeof(Config.TableWithoutHeaderRowHandlingOption), function.Parameters.TableWithoutHeaderRowHandling), //handle table without header rows
             };
 
-            
-            string html = function.InputData;
-            
+            // Create Converter Object
             var converter = new Converter(config);
 
 
-            try
+            try // Attempt to convert the HTML
             {
-                resultData = converter.Convert(html);
+                resultData = converter.Convert(function.InputData);
             }
-            catch (Exception)
+            catch (ArgumentException exception) //Throw an error if it doesn't work
             {
-                throw;
+                errorMessage = exception.ToString();
             }
         }
     }

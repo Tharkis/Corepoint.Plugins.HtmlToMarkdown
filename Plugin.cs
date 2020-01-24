@@ -28,13 +28,21 @@ namespace Corepoint.Plugin
         /// <param name="status">The value that will be returned in the "Status" variable</param>
         public void Invoke(ref string sourceOperand, ref string options, ref string destinationOperand, ref string status)
         {
-            // Deserialize the JSON and make it an Object
-            // Action action = JsonConvert.DeserializeObject<Action>(options);
+            
+            try
+            {
+                // Deserialize the JSON and make it an Object
+                Function function = JsonConvert.DeserializeObject<Function>(sourceOperand);
 
-            Function function = JsonConvert.DeserializeObject<Function>(sourceOperand);
+                // Converts the provided text to Markdown text.
+                HtmlToMarkdown.ConvertToMarkdown(function, out destinationOperand, out status);
+            }
+            catch (ArgumentException exception)
+            {
+                status = exception.ToString();
+                
+            }
 
-            // Converts the provided text to Markdown text.
-            HtmlToMarkdown.ConvertToMarkdown(function, out destinationOperand, out status);
             return;
         }
 
